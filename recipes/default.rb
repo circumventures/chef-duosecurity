@@ -210,30 +210,10 @@ if use_pam == 'yes'
 
   include_recipe 'pam'
 end
-  
-# Enable login_duo and harden sshd
-# https://www.duosecurity.com/docs/duounix#3.-enable-login_duo
-node.default['sshd']['sshd_config']['PermitTunnel'] = 'no'
-node.default['sshd']['sshd_config']['AllowTcpForwarding'] = 'no'
-node.default['sshd']['sshd_config']['UseDNS'] = 'no'
 
-if use_pam == 'yes'
-  node.default['sshd']['sshd_config']['UsePAM'] = 'yes'
-  node.default['sshd']['sshd_config']['ChallengeResponseAuthentication'] = 'yes'
-else
-  node.default['sshd']['sshd_config']['ForceCommand'] = '/usr/sbin/login_duo'
-end
-
-case first_factor
-when 'pubkey'
-  node.default['sshd']['sshd_config']['PasswordAuthentication'] = 'no'
-  node.default['sshd']['sshd_config']['AuthenticationMethods'] = 'publickey,keyboard-interactive'
-  node.default['sshd']['sshd_config']['PubkeyAuthentication'] = 'yes'
-  node.default['sshd']['sshd_config']['RSAAuthentication'] = 'yes'
-when 'password'
-  node.default['sshd']['sshd_config']['PasswordAuthentication'] = 'yes'
-  node.default['sshd']['sshd_config']['AuthenticationMethods'] = 'keyboard-interactive'
-end
-
-include_recipe 'sshd'
-
+#if use_pam == 'yes'
+#  node.default['sshd']['sshd_config']['UsePAM'] = 'yes'
+#  node.default['sshd']['sshd_config']['ChallengeResponseAuthentication'] = 'yes'
+#else
+#  node.default['sshd']['sshd_config']['ForceCommand'] = '/usr/sbin/login_duo'
+#end
